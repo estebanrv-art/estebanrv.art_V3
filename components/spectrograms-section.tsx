@@ -1,95 +1,249 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Volume2, VolumeX, ZoomIn } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 
-// ─── Spectrogram data ─────────────────────────────────────────────────────────
-// Each entry pairs a spectrogram image with its corresponding audio file.
-// Click a card → fullscreen lightbox opens and audio auto-plays.
 interface SpectrogramItem {
   id: string;
   titleEs: string;
   title: string;
+  // TODO: update year for each spectrogram to match the piece's composition/recording year
+  year: string;
+  imageSrc: string;
+  // TODO: update descriptions with accurate program notes for each spectrogram
   descriptionEs: string;
   description: string;
-  // TODO: Replace "" with the path to the spectrogram image.
-  //   Recommended: place .jpg/.webp files in /public/images/spectrograms/
-  //   Example: "/images/spectrograms/work-01.jpg"
-  imageSrc: string;
-  // TODO: Replace "" with the path or URL to the audio file.
-  //   Option A — local file: place .mp3/.ogg in /public/audio/ and use "/audio/work-01.mp3"
-  //   Option B — external URL: use a direct link (must allow cross-origin)
-  //   The audio element's `crossOrigin` attribute is set to "anonymous" for external URLs.
-  audioSrc: string;
-  year: string;
 }
 
-const spectrograms: SpectrogramItem[] = [
-  // TODO: Replace all entries below with actual spectrogram + audio pairs
+interface SpectrogramGroup {
+  id: string;
+  labelEs: string;
+  label: string;
+  items: SpectrogramItem[];
+  sizeClass?: 'large' | 'medium' | 'small';
+}
+
+const BASE = "/images/spectrograms/";
+
+const spectrogramGroups: SpectrogramGroup[] = [
   {
-    id: "sg01",
-    titleEs: "Espectrograma 1 — Título de la obra",
-    title: "Spectrogram 1 — Work Title",
-    year: "2024",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-01.jpg"
-    audioSrc: "",   // TODO: "/audio/work-01.mp3"
+    id: "chicharra",
+    labelEs: "Chicharra",
+    label: "Chicharra",
+    sizeClass: "large",
+    items: [
+      {
+        id: "sg01",
+        titleEs: "Chicharra Jiutepec 2",
+        title: "Jiutepec Cicada 2",
+        year: "2017",
+        imageSrc: BASE + "chicharra_zoom2.webp",
+        descriptionEs: "Detalle espectral de Chicharra.",
+        description: "Spectral detail of Chicharra.",
+      },
+      {
+        id: "sg02",
+        titleEs: "Chicharra Jiutepec 4",
+        title: "Jiutepec Cicada 4",
+        year: "2017",
+        imageSrc: BASE + "chiharron_jiute_lejos.webp",
+        descriptionEs: "Grabación de campo: chicharra desde lejos en Jiutepec.",
+        description: "Field recording: cicada from a distance in Jiutepec.",
+      },
+    ],
   },
   {
-    id: "sg02",
-    titleEs: "Espectrograma 2 — Título de la obra",
-    title: "Spectrogram 2 — Work Title",
-    year: "2023",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-02.jpg"
-    audioSrc: "",   // TODO: "/audio/work-02.mp3"
+    id: "ecolalia2",
+    labelEs: "Ecolalia 2",
+    label: "Ecolalia 2",
+    sizeClass: "medium",
+    items: [
+      {
+        id: "sg03",
+        titleEs: "Mix",
+        title: "Mix",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia_2_Mix.webp",
+        descriptionEs: "Canal mixto de Ecolalia 2.",
+        description: "Mixed channel of Ecolalia 2.",
+      },
+      {
+        id: "sg04",
+        titleEs: "L",
+        title: "L",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia_2_L.webp",
+        descriptionEs: "Canal izquierdo de Ecolalia 2.",
+        description: "Left channel of Ecolalia 2.",
+      },
+      {
+        id: "sg05",
+        titleEs: "R",
+        title: "R",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia_2_R.webp",
+        descriptionEs: "Canal derecho de Ecolalia 2.",
+        description: "Right channel of Ecolalia 2.",
+      },
+      {
+        id: "sg06",
+        titleEs: "Full",
+        title: "Full",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia2_full.webp",
+        descriptionEs: "Vista completa del espectrograma.",
+        description: "Full spectrogram view.",
+      },
+      {
+        id: "sg07",
+        titleEs: "Final",
+        title: "Ending",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia2_final.webp",
+        descriptionEs: "Sección final del espectrograma.",
+        description: "Final section of the spectrogram.",
+      },
+      {
+        id: "sg08",
+        titleEs: "Zoom 1",
+        title: "Zoom 1",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia2_zoom1.webp",
+        descriptionEs: "Detalle ampliado — sección 1.",
+        description: "Zoomed detail — section 1.",
+      },
+      {
+        id: "sg09",
+        titleEs: "Zoom 2",
+        title: "Zoom 2",
+        year: "2021",
+        imageSrc: BASE + "Ecolalia2_zoom2.webp",
+        descriptionEs: "Detalle ampliado — sección 2.",
+        description: "Zoomed detail — section 2.",
+      },
+    ],
   },
   {
-    id: "sg03",
-    titleEs: "Espectrograma 3 — Título de la obra",
-    title: "Spectrogram 3 — Work Title",
-    year: "2022",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-03.jpg"
-    audioSrc: "",   // TODO: "/audio/work-03.mp3"
+    id: "semantica",
+    labelEs: "Traslación Semántica",
+    label: "Semantic Shift",
+    sizeClass: "medium",
+    items: [
+      {
+        id: "sg10",
+        titleEs: "Guadañas/ambulancias",
+        title: "Scythes/Ambulances",
+        year: "2018",
+        imageSrc: BASE + "semantica1_guadanas_ambulancias.webp",
+        descriptionEs: "Análisis semántico del sonido: guadañas y ambulancias.",
+        description: "Semantic analysis of sound: scythes and ambulances.",
+      },
+      {
+        id: "sg11",
+        titleEs: "Lluvia/Gotas",
+        title: "Rain/Drops",
+        year: "2018",
+        imageSrc: BASE + "semantica2_Lluvia.webp",
+        descriptionEs: "Análisis semántico: lluvia.",
+        description: "Semantic analysis: rain.",
+      },
+      {
+        id: "sg12",
+        titleEs: "Microondas/Artificial",
+        title: "Microwave/Artificial",
+        year: "2019",
+        imageSrc: BASE + "semantica3_microondas.webp",
+        descriptionEs: "Análisis semántico: microondas.",
+        description: "Semantic analysis: microwaves.",
+      },
+      {
+        id: "sg13",
+        titleEs: "Chicharra/Natural",
+        title: "Cicada/Natural",
+        year: "2017",
+        imageSrc: BASE + "semantica4_chicharra_mantenida.webp",
+        descriptionEs: "Análisis semántico: chicharra sostenida.",
+        description: "Semantic analysis: sustained cicada.",
+      },
+    ],
   },
   {
-    id: "sg04",
-    titleEs: "Espectrograma 4 — Título de la obra",
-    title: "Spectrogram 4 — Work Title",
-    year: "2021",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-04.jpg"
-    audioSrc: "",   // TODO: "/audio/work-04.mp3"
-  },
-  {
-    id: "sg05",
-    titleEs: "Espectrograma 5 — Título de la obra",
-    title: "Spectrogram 5 — Work Title",
-    year: "2020",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-05.jpg"
-    audioSrc: "",   // TODO: "/audio/work-05.mp3"
-  },
-  {
-    id: "sg06",
-    titleEs: "Espectrograma 6 — Título de la obra",
-    title: "Spectrogram 6 — Work Title",
-    year: "2019",
-    descriptionEs: "Descripción breve de la obra representada.",
-    description: "Brief description of the represented work.",
-    imageSrc: "",   // TODO: "/images/spectrograms/work-06.jpg"
-    audioSrc: "",   // TODO: "/audio/work-06.mp3"
+    id: "armonicos",
+    labelEs: "Armónicos",
+    label: "Harmonics",
+    sizeClass: "small",
+    items: [
+      {
+        id: "sg14",
+        titleEs: "Acid Synth",
+        title: "Acid Synth",
+        year: "2026",
+        imageSrc: BASE + "armonicos1_acid.webp",
+        descriptionEs: "Análisis de armónicos: síntesis acid.",
+        description: "Harmonic analysis: acid synthesis.",
+      },
+      {
+        id: "sg15",
+        titleEs: "Retrologue",
+        title: "Retrologue",
+        year: "2026",
+        imageSrc: BASE + "armonicos2_retrologue.webp",
+        descriptionEs: "Análisis de armónicos: sintetizador Retrologue.",
+        description: "Harmonic analysis: Retrologue synthesizer.",
+      },
+      {
+        id: "sg16",
+        titleEs: "Piano Reverb",
+        title: "Reverb Piano",
+        year: "2026",
+        imageSrc: BASE + "armonicos3_piano.webp",
+        descriptionEs: "Análisis de armónicos: piano acústico.",
+        description: "Harmonic analysis: acoustic piano.",
+      },
+      {
+        id: "sg17",
+        titleEs: "Campanas",
+        title: "Bells",
+        year: "2026",
+        imageSrc: BASE + "armonicos4_bells.webp",
+        descriptionEs: "Análisis de armónicos: campanas.",
+        description: "Harmonic analysis: bells.",
+      },
+    ],
   },
 ];
 
-// ─── Lightbox component ───────────────────────────────────────────────────────
+function useViewportWidth() {
+  const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return width;
+}
+
+function getGridMinmax(sizeClass: string | undefined, viewportWidth: number): string {
+  const isMobile = viewportWidth < 640;
+
+  if (isMobile) {
+    return "minmax(100%, 1fr)";
+  }
+
+  switch (sizeClass) {
+    case "large":
+      return "minmax(calc(50% - 0.75rem), 1fr)";
+    case "small":
+      return "minmax(calc(25% - 0.75rem), 1fr)";
+    case "medium":
+    default:
+      return "minmax(calc(33.333% - 0.75rem), 1fr)";
+  }
+}
+
 function Lightbox({
   item,
   onClose,
@@ -97,29 +251,10 @@ function Lightbox({
   item: SpectrogramItem;
   onClose: () => void;
 }) {
-  const { language, t } = useLanguage();
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [muted, setMuted] = useState(false);
-  const [playing, setPlaying] = useState(false);
-
+  const { language } = useLanguage();
   const title       = language === "es" ? item.titleEs       : item.title;
   const description = language === "es" ? item.descriptionEs : item.description;
 
-  // Auto-play on open
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !item.audioSrc) return;
-    audio.load();
-    audio.play().then(() => setPlaying(true)).catch(() => {
-      // Autoplay may be blocked by the browser — user can unmute/play manually
-      setPlaying(false);
-    });
-    return () => {
-      audio.pause();
-    };
-  }, [item.audioSrc]);
-
-  // ESC to close
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -128,139 +263,66 @@ function Lightbox({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // Prevent body scroll while lightbox is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
-
-  function toggleMute() {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = !audio.muted;
-    setMuted(audio.muted);
-  }
 
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(10,10,11,0.97)] backdrop-blur-[10px]"
+      className="fixed inset-0 z-[100] flex items-center justify-center"
+      style={{ background: "rgba(10,10,11,0.97)", backdropFilter: "blur(12px)" }}
     >
-      {/* Inner panel — click inside does not close */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl max-h-[90vh] mx-4 bg-surface-2 rounded-[2rem] border border-[rgba(250,248,245,0.05)] shadow-[0_0_0_1px_rgba(250,248,245,0.05)] flex flex-col overflow-hidden"
+        className="w-full flex flex-col overflow-hidden"
+        style={{
+          maxWidth: 1100,
+          maxHeight: "90vh",
+          margin: 16,
+          background: "#13132C",
+          borderRadius: "2rem",
+          border: "1px solid rgba(250,248,245,0.05)",
+        }}
       >
-        {/* Controls row */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(250,248,245,0.05)] shrink-0">
+        <div
+          className="flex items-center justify-between px-6 py-4 shrink-0"
+          style={{ borderBottom: "1px solid rgba(250,248,245,0.05)" }}
+        >
           <div className="flex items-baseline gap-3 min-w-0">
-            <span className="font-serif italic text-fg text-base truncate">
-              {title}
-            </span>
+            <span className="font-serif italic text-fg text-base truncate">{title}</span>
             <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/30 shrink-0">
               {item.year}
             </span>
           </div>
-
-          <div className="flex items-center gap-2 shrink-0 ml-4">
-            {/* Mute toggle — only shown when there's an audio source */}
-            {item.audioSrc && (
-              <button
-                onClick={toggleMute}
-                aria-label={muted ? "Unmute" : "Mute"}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-fg/50 hover:text-fg border border-fg/10 hover:border-fg/20 transition-all duration-200"
-              >
-                {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-              </button>
-            )}
-
-            {/* Close */}
-            <button
-              onClick={onClose}
-              aria-label={t("spectrograms_close")}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-fg/50 hover:text-fg border border-fg/10 hover:border-fg/20 transition-all duration-200"
-            >
-              <X size={20} />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-fg/50 hover:text-fg shrink-0 transition-colors duration-200"
+            style={{ border: "1px solid rgba(250,248,245,0.1)" }}
+          >
+            <X size={16} />
+          </button>
         </div>
 
-        {/* Spectrogram image */}
         <div className="flex-1 overflow-auto min-h-0">
-          {item.imageSrc ? (
-            /*
-              TODO: Once imageSrc is set, this <img> will display the actual spectrogram.
-              For Next.js Image optimization, consider switching to <Image> from "next/image"
-              after adding the domain/path to next.config.ts.
-            */
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.imageSrc}
-              alt={title}
-              className="w-full h-auto"
-            />
-          ) : (
-            /* TODO: Remove this placeholder block once imageSrc is set */
-            <div className="relative h-48 md:h-64 bg-surface flex items-center justify-center">
-              {/* Animated placeholder simulating a spectrogram */}
-              <svg
-                width="100%"
-                height="100%"
-                viewBox="0 0 800 200"
-                preserveAspectRatio="none"
-              >
-                {Array.from({ length: 80 }, (_, i) => (
-                  <rect
-                    key={i}
-                    x={i * 10}
-                    y={200 - Math.random() * 160 - 20}
-                    width={8}
-                    height={Math.random() * 160 + 20}
-                    fill={`oklch(0.72 0.12 ${80 + i * 2})`}
-                  />
-                ))}
-              </svg>
-              <span className="absolute text-[0.7rem] uppercase tracking-[0.15em] text-fg/20">
-                {/* TODO: Remove this label once the image is added */}
-                Spectrogram Image
-              </span>
-            </div>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={item.imageSrc} alt={title} className="w-full h-auto" />
         </div>
 
-        {/* Description */}
-        <p className="px-6 py-4 text-sm font-light text-fg/50 border-t border-[rgba(250,248,245,0.05)] shrink-0">
-          {description}
-        </p>
-
-        {/* Audio player — hidden native element for programmatic control */}
-        {/*
-          TODO: Once audioSrc is set on the item, audio will auto-play on open.
-          The audio element is intentionally hidden; use the mute button above.
-          Add crossOrigin="anonymous" if using an external URL.
-        */}
-        <audio
-          ref={audioRef}
-          src={item.audioSrc || undefined}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
-          // Uncomment if using external audio URLs:
-          // crossOrigin="anonymous"
-        />
-
-        {/* Playback indicator */}
-        {item.audioSrc && (
-          <div className="flex items-center gap-2 px-6 pb-4 text-[0.65rem] uppercase tracking-[0.15em] text-fg/30 shrink-0">
-            <span className={`w-1.5 h-1.5 rounded-full ${playing ? "bg-accent animate-pulse" : "bg-fg/20"}`} />
-            {playing ? (language === "es" ? "Reproduciendo" : "Playing") : (language === "es" ? "Pausado" : "Paused")}
-          </div>
-        )}
+        <div
+          className="px-6 py-4 shrink-0"
+          style={{ borderTop: "1px solid rgba(250,248,245,0.05)" }}
+        >
+          <p className="text-[0.875rem] font-light text-fg/50">{description}</p>
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Card component ───────────────────────────────────────────────────────────
 function SpectrogramCard({
   item,
   onClick,
@@ -272,116 +334,127 @@ function SpectrogramCard({
   const title = language === "es" ? item.titleEs : item.title;
 
   return (
-    <div className="rounded-[2rem] border border-[rgba(250,248,245,0.05)] bg-surface overflow-hidden hover:border-[rgba(67,179,174,0.15)] transition-all duration-300 shadow-[var(--shadow-card)]">
-      <button
-        onClick={onClick}
-        aria-label={`Open spectrogram: ${title}`}
-        className="w-full group"
-      >
-        {/* Image area */}
-        <div className="relative aspect-[4/3] overflow-hidden">
-          {item.imageSrc ? (
-            /*
-              TODO: Once imageSrc is set, this displays the spectrogram thumbnail.
-            */
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.imageSrc}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            /* TODO: Remove this placeholder once imageSrc is set */
-            <div className="absolute inset-0 bg-surface-2 flex items-center justify-center">
-              {/* Placeholder spectrogram bars */}
-              <svg
-                width="100%"
-                height="100%"
-                viewBox="0 0 200 120"
-                preserveAspectRatio="none"
-              >
-                {Array.from({ length: 20 }, (_, i) => (
-                  <rect
-                    key={i}
-                    x={i * 10}
-                    y={120 - (30 + ((i * 37 + 13) % 70))}
-                    width={8}
-                    height={30 + ((i * 37 + 13) % 70)}
-                    fill={`oklch(0.72 0.12 ${80 + i * 5})`}
-                  />
-                ))}
-              </svg>
-            </div>
-          )}
+    <div
+      className="rounded-[2rem] border border-[rgba(250,248,245,0.05)] bg-surface overflow-hidden shadow-[var(--shadow-card)] cursor-pointer transition-all duration-300 hover:border-[rgba(67,179,174,0.15)] hover:-translate-y-0.5"
+      onClick={onClick}
+    >
+      <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.imageSrc}
+          alt={title}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-bg/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full border border-accent/50 flex items-center justify-center">
-              <ZoomIn size={20} className="text-accent" />
-            </div>
+        <div className="absolute inset-0 bg-bg/50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center"
+            style={{ border: "1px solid rgba(67,179,174,0.5)" }}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(67,179,174,0.9)"
+              strokeWidth="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="11" y1="8" x2="11" y2="14" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
           </div>
+        </div>
 
-          {/* Year badge */}
-          <span className="absolute top-3 left-3 text-[0.55rem] uppercase tracking-[0.15em] text-fg/60 bg-bg/60 backdrop-blur-sm px-2 py-1 rounded-full">
+      </div>
+
+      <div className="px-5 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <p className="font-serif italic text-[0.9rem] text-fg/70 leading-snug line-clamp-2">
+            {title}
+          </p>
+          <span className="font-serif italic text-[0.9rem] text-fg/40 shrink-0">
             {item.year}
           </span>
         </div>
-
-        {/* Card label */}
-        <div className="px-5 py-4">
-          <p className="text-sm font-light text-fg/70 text-left line-clamp-2 leading-snug">
-            {title}
-          </p>
-        </div>
-      </button>
+      </div>
     </div>
   );
 }
 
-// ─── Main section ─────────────────────────────────────────────────────────────
 export default function SpectrogramsSection() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [active, setActive] = useState<SpectrogramItem | null>(null);
   const close = useCallback(() => setActive(null), []);
+  const viewportWidth = useViewportWidth();
 
   return (
     <>
-      <section id="spectrograms" className="bg-bg min-h-screen py-20 px-8 md:px-16 pt-32">
-        <div className="max-w-7xl mx-auto">
-
-          {/* Section label */}
+      <section
+        id="spectrograms"
+        className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20"
+      >
+        <div className="max-w-[1280px] mx-auto">
           <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-            05 — {t("spectrograms_heading")}
+            {language === "es" ? "06 — Espectrogramas" : "06 — Spectrograms"}
           </p>
 
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
             <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent">
               {t("spectrograms_heading")}
             </h2>
-            <p className="text-sm font-light text-fg/40 max-w-sm hidden md:block">
+            <p className="text-[0.875rem] font-light text-fg/40 max-w-[300px] text-right leading-[1.6] shrink-0 hidden md:block">
               {t("spectrograms_sub")}
             </p>
           </div>
 
-          {/* Mobile subtitle */}
           <p className="text-sm font-light text-fg/40 mb-10 md:hidden">
             {t("spectrograms_sub")}
           </p>
 
-          {/* Cards grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {spectrograms.map((item) => (
-              <SpectrogramCard
-                key={item.id}
-                item={item}
-                onClick={() => setActive(item)}
-              />
-            ))}
+          <div className="flex flex-col gap-12">
+            {spectrogramGroups.map((group) => {
+              const label = language === "es" ? group.labelEs : group.label;
+              const minmax = getGridMinmax(group.sizeClass, viewportWidth);
+
+              return (
+                <div key={group.id}>
+                  {/* Group header */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-[0.7rem] uppercase tracking-[0.22em] text-accent/60">
+                      {label}
+                    </span>
+                    <div
+                      className="flex-1 h-px"
+                      style={{ background: "rgba(67,179,174,0.12)" }}
+                    />
+                  </div>
+
+                  {/* Cards grid for this group — responsive with auto-fit */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: `repeat(auto-fit, ${minmax})`,
+                      gap: "1.5rem",
+                    }}
+                  >
+                    {group.items.map((item) => (
+                      <SpectrogramCard
+                        key={item.id}
+                        item={item}
+                        onClick={() => setActive(item)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Fullscreen lightbox — rendered outside section for proper z-index */}
       {active && <Lightbox item={active} onClose={close} />}
     </>
   );

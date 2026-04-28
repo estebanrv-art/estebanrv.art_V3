@@ -10,9 +10,11 @@ const translations = {
     // Navbar
     nav_bio: "Biografía",
     nav_works: "Obras",
+    nav_scores: "Partituras",
     nav_recordings: "Grabaciones",
     nav_videos: "Videos",
     nav_spectrograms: "Espectrogramas",
+    // TODO: add labels for future nav sections (e.g. nav_projects, nav_press)
     nav_contact: "Contacto",
     lang_toggle: "EN",
 
@@ -23,7 +25,7 @@ const translations = {
     hero_lang_en: "English",
 
     // Bio
-    bio_heading: "Sobre Esteban",
+    bio_heading: "Bio",
     bio_p1:
       "Esteban Ruiz-Velasco es un compositor y pianista de música contemporánea, " +
       "con un amplio repertorio que abarca desde obras solistas hasta composiciones " +
@@ -58,6 +60,23 @@ const translations = {
       "Haz clic en una imagen para verla en pantalla completa y escuchar la obra.",
     spectrograms_close: "Cerrar",
 
+    // Projects
+    nav_projects: "Proyectos",
+    projects_heading: "Proyectos",
+    projects_sub: "Herramientas, librerías y proyectos de software que he desarrollado.",
+
+    // Contact
+    contact_heading: "Contacto",
+    contact_sub: "Para conciertos, colaboraciones o consultas.",
+    contact_fname: "Nombre",
+    contact_lname: "Apellido",
+    contact_email: "Correo electrónico",
+    contact_subject: "Asunto",
+    contact_message: "Mensaje",
+    contact_submit: "Enviar",
+    contact_success: "Mensaje enviado. Gracias por tu interés.",
+    contact_email_label: "Correo directo",
+
     // Footer
     footer_copy: "© 2026 Esteban Ruiz-Velasco. Todos los derechos reservados.",
   },
@@ -65,9 +84,11 @@ const translations = {
     // Navbar
     nav_bio: "Biography",
     nav_works: "Works",
+    nav_scores: "Scores",
     nav_recordings: "Recordings",
     nav_videos: "Videos",
     nav_spectrograms: "Spectrograms",
+    // TODO: add labels for future nav sections (e.g. nav_projects, nav_press)
     nav_contact: "Contact",
     lang_toggle: "ES",
 
@@ -78,7 +99,7 @@ const translations = {
     hero_lang_en: "English",
 
     // Bio
-    bio_heading: "About Esteban",
+    bio_heading: "Bio",
     bio_p1:
       "Esteban Ruiz-Velasco is a composer and pianist of contemporary music, " +
       "with a broad repertoire spanning solo works, chamber ensemble compositions, " +
@@ -112,6 +133,23 @@ const translations = {
     spectrograms_sub:
       "Click an image to view it fullscreen and listen to the piece.",
     spectrograms_close: "Close",
+
+    // Projects
+    nav_projects: "Projects",
+    projects_heading: "Projects",
+    projects_sub: "Tools, libraries, and software projects I've built.",
+
+    // Contact
+    contact_heading: "Contact",
+    contact_sub: "For performances, collaborations or enquiries.",
+    contact_fname: "First name",
+    contact_lname: "Last name",
+    contact_email: "Email",
+    contact_subject: "Subject",
+    contact_message: "Message",
+    contact_submit: "Send",
+    contact_success: "Message sent. Thank you for your interest.",
+    contact_email_label: "Direct email",
 
     // Footer
     footer_copy: "© 2026 Esteban Ruiz-Velasco. All rights reserved.",
