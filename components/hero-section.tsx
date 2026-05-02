@@ -1,77 +1,193 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useLanguage, type Language } from "@/lib/language-context";
 
-export default function HeroSection() {
-  const { language, setLanguage, t } = useLanguage();
-  const router = useRouter();
+function LangButton({ label, onClick }: { label: string; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        padding: "4px 0",
+        background: "none",
+        border: "none",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontSize: "0.75rem",
+        textTransform: "uppercase",
+        letterSpacing: "0.2em",
+        color: hovered ? "#FAF8F5" : "rgba(250,248,245,0.5)",
+        cursor: "pointer",
+        transition: "color 0.25s ease",
+      }}
+    >
+      {label}
+      <span
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: "#43B3AE",
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.25s ease",
+        }}
+      />
+    </button>
+  );
+}
+
+export default function HeroSection({ onChoose }: { onChoose: () => void }) {
+  const { language, setLanguage } = useLanguage();
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 50);
+    const t2 = setTimeout(() => setPhase(2), 1000);
+    const t3 = setTimeout(() => setPhase(3), 2300);
+    const t4 = setTimeout(() => setPhase(4), 3700);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
 
   function choose(lang: Language) {
     setLanguage(lang);
-    router.push("/bio");
+    onChoose();
   }
 
   return (
     <section
-      id="hero"
-      className="relative min-h-screen overflow-hidden flex items-end pb-20 px-8 md:px-16 bg-bg"
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "flex-end",
+        paddingBottom: 80,
+        paddingLeft: "clamp(32px, 5vw, 64px)",
+        paddingRight: "clamp(32px, 5vw, 64px)",
+        background: "#0A0A0B",
+      }}
     >
-      {/* ── Background ─────────────────────────────────────────────── */}
-      <div className="absolute inset-0 bg-[url('/images/chicharra_hero.png')] bg-cover bg-center bg-no-repeat" />
-
-      {/* Gradient overlay — clear on top, black at bottom */}
+      {/* Background image — fades in at phase 1 */}
       <div
-        className="absolute inset-0"
-        style={{ background: "linear-gradient(135deg, rgba(10,10,11,0.97) 0%, rgba(10,10,11,0.30) 100%)" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "url('/images/chicharra_hero.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: phase >= 1 ? 1 : 0,
+          transition: "opacity 2s cubic-bezier(0.25,0.46,0.45,0.94)",
+        }}
       />
 
-      {/* ── Content — bottom-left ──────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-5xl">
+      {/* Content — bottom-left */}
+      <div style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: 900 }}>
 
-        {/* Artist identity */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-px bg-accent" />
-            <span className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 font-sans">
-              {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
-            </span>
-          </div>
-          <h1 className="font-serif italic font-normal text-[clamp(3.2rem,8.5vw,8rem)] leading-[0.88] tracking-[-0.02em] text-fg">
+        {/* "Compositor · Pianista" — phase 3 */}
+        <div
+          style={{
+            opacity: phase >= 3 ? 1 : 0,
+            transform: phase >= 3 ? "translateY(0)" : "translateY(8px)",
+            transition: "opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)",
+            marginBottom: 22,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: "0.75rem",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.28em",
+              color: "rgba(250,248,245,0.45)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
+          </span>
+        </div>
+
+        {/* Artist name — phase 2 */}
+        <div
+          style={{
+            marginBottom: 38,
+            opacity: phase >= 2 ? 1 : 0,
+            transition: "opacity 1.2s cubic-bezier(0.25,0.46,0.45,0.94)",
+          }}
+        >
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: "clamp(3.2rem, 8.5vw, 8rem)",
+              lineHeight: 0.88,
+              letterSpacing: "-0.02em",
+              color: "#FAF8F5",
+              margin: 0,
+            }}
+          >
             Esteban
           </h1>
-          <h1 className="font-serif italic font-normal text-[clamp(3.2rem,8.5vw,8rem)] leading-[0.88] tracking-[-0.02em] text-fg">
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: "clamp(3.2rem, 8.5vw, 8rem)",
+              lineHeight: 0.88,
+              letterSpacing: "-0.02em",
+              color: "#FAF8F5",
+              margin: 0,
+            }}
+          >
             Ruiz-Velasco
           </h1>
-          <p className="mt-6 text-base font-light text-fg/55 max-w-md leading-relaxed">
-            {t("hero_tagline")}
+        </div>
+
+        {/* Tagline — phase 3 */}
+        <div
+          style={{
+            opacity: phase >= 3 ? 1 : 0,
+            transform: phase >= 3 ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)",
+            marginBottom: 40,
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: "0.75rem",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.28em",
+              color: "rgba(250,248,245,0.45)",
+              whiteSpace: "nowrap",
+              margin: 0,
+            }}
+          >
+            {language === "es"
+              ? "Arte sonoro · Música de concierto · Multimedia"
+              : "Sound art · Concert music · Multimedia"}
           </p>
         </div>
 
-        {/* Language buttons */}
-        <div>
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-4">
-            {t("hero_select_lang")}
-          </p>
-          <div className="flex gap-3 flex-wrap">
-            <button
-              onClick={() => choose("es")}
-              className="relative overflow-hidden group px-7 py-3 rounded-[4rem] border border-accent/35 text-[0.75rem] uppercase tracking-[0.2em] text-fg transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-[1.03]"
-            >
-              <span className="absolute inset-0 bg-accent -translate-x-full group-hover:translate-x-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]" aria-hidden="true" />
-              <span className="relative z-10 group-hover:text-bg transition-colors duration-300">
-                {t("hero_lang_es")}
-              </span>
-            </button>
-            <button
-              onClick={() => choose("en")}
-              className="relative overflow-hidden group px-7 py-3 rounded-[4rem] border border-accent/35 text-[0.75rem] uppercase tracking-[0.2em] text-fg transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-[1.03]"
-            >
-              <span className="absolute inset-0 bg-accent -translate-x-full group-hover:translate-x-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]" aria-hidden="true" />
-              <span className="relative z-10 group-hover:text-bg transition-colors duration-300">
-                {t("hero_lang_en")}
-              </span>
-            </button>
+        {/* Language buttons — phase 4 */}
+        <div
+          style={{
+            opacity: phase >= 4 ? 1 : 0,
+            transform: phase >= 4 ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)",
+          }}
+        >
+          <div style={{ display: "flex", gap: 28, flexWrap: "wrap", alignItems: "flex-start" }}>
+            <LangButton label="Español" onClick={() => choose("es")} />
+            <LangButton label="English" onClick={() => choose("en")} />
           </div>
         </div>
 

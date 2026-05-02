@@ -4,9 +4,6 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 
-// ─── Work data ───────────────────────────────────────────────────────────────
-// TODO: Replace placeholder works with actual composition data.
-// Each entry supports bilingual title, description, and optional links.
 interface Work {
   id: string;
   titleEs: string;
@@ -16,82 +13,76 @@ interface Work {
   instrumentation: string;
   descriptionEs: string;
   description: string;
-  // TODO: Add a link to listen to this work (SoundCloud, Bandcamp, etc.)
   listenUrl?: string;
-  // TODO: Add a link to the score/sheet music (PDF or external)
   scoreUrl?: string;
-  // Category for potential filtering
   category: "chamber" | "solo" | "orchestral" | "electroacoustic" | "film";
 }
 
 const works: Work[] = [
-  // TODO: Replace all entries below with actual works by Esteban Ruiz-Velasco
   {
     id: "w01",
-    titleEs: "Obra para piano solo",
-    title: "Work for Solo Piano",
+    titleEs: "Chicharra",
+    title: "Chicharra",
     year: "2024",
-    instrumentationEs: "Piano solo",
-    instrumentation: "Solo piano",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
-    // TODO: listenUrl: "https://soundcloud.com/...",
-    // TODO: scoreUrl: "https://...",
-    category: "solo",
+    instrumentationEs: "Piano y electrónica en vivo",
+    instrumentation: "Piano and live electronics",
+    descriptionEs: "Obra para piano y electrónica en vivo inspirada en el canto de la chicharra.",
+    description: "Work for piano and live electronics inspired by the cicada's song.",
+    category: "electroacoustic",
   },
   {
     id: "w02",
-    titleEs: "Trío de cuerdas",
-    title: "String Trio",
+    titleEs: "Trío de cuerdas núm. 1",
+    title: "String Trio No. 1",
     year: "2023",
     instrumentationEs: "Violín, viola y violonchelo",
     instrumentation: "Violin, viola and cello",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
+    descriptionEs: "Exploración tímbrica a través de técnicas extendidas.",
+    description: "Timbral exploration through extended techniques.",
     category: "chamber",
   },
   {
     id: "w03",
-    titleEs: "Piezas electroacústicas",
-    title: "Electroacoustic Pieces",
+    titleEs: "Piezas microtonales",
+    title: "Microtonal Pieces",
     year: "2022",
-    instrumentationEs: "Piano y electrónica",
-    instrumentation: "Piano and electronics",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
-    category: "electroacoustic",
+    instrumentationEs: "Piano preparado",
+    instrumentation: "Prepared piano",
+    descriptionEs: "Serie de piezas breves que exploran la microtonalidad.",
+    description: "Series of short pieces exploring microtonality.",
+    category: "solo",
   },
   {
     id: "w04",
-    titleEs: "Cuarteto de cuerdas",
-    title: "String Quartet",
+    titleEs: "Cuarteto de cuerdas núm. 1",
+    title: "String Quartet No. 1",
     year: "2021",
     instrumentationEs: "Dos violines, viola y violonchelo",
     instrumentation: "Two violins, viola and cello",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
+    descriptionEs: "Obra en un movimiento para cuarteto de cuerdas.",
+    description: "Single-movement work for string quartet.",
     category: "chamber",
   },
   {
     id: "w05",
-    titleEs: "Música de cine",
+    titleEs: "Música para película",
     title: "Film Score",
     year: "2020",
     instrumentationEs: "Orquesta de cámara",
     instrumentation: "Chamber orchestra",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
+    descriptionEs: "Banda sonora original para largometraje.",
+    description: "Original soundtrack for feature film.",
     category: "film",
   },
   {
     id: "w06",
-    titleEs: "Sonata para piano",
-    title: "Piano Sonata",
+    titleEs: "Sonata para piano núm. 1",
+    title: "Piano Sonata No. 1",
     year: "2019",
     instrumentationEs: "Piano solo",
     instrumentation: "Solo piano",
-    descriptionEs: "Descripción de la obra — se añadirá próximamente.",
-    description: "Description of the work — to be added soon.",
+    descriptionEs: "Sonata en tres movimientos influenciada por la música mexicana.",
+    description: "Sonata in three movements influenced by Mexican music.",
     category: "solo",
   },
 ];
@@ -101,103 +92,64 @@ export default function WorksSection() {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
-    <section id="works" className="bg-surface min-h-screen py-20 px-8 md:px-16 pt-32">
-      <div className="max-w-7xl mx-auto">
+    <section id="works" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
+      <div className="max-w-[1280px] mx-auto">
 
-        {/* Section label */}
         <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-          02 — {t("works_heading")}
+          {language === "es" ? "02 — Obras" : "02 — Works"}
         </p>
 
         <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent mb-12">
           {t("works_heading")}
         </h2>
 
-        {/* Works list */}
-        <div className="divide-y divide-[rgba(250,248,245,0.05)]">
+        <div className="border-t border-[rgba(250,248,245,0.05)]">
           {works.map((work) => {
-            const title    = language === "es" ? work.titleEs    : work.title;
-            const instrum  = language === "es" ? work.instrumentationEs : work.instrumentation;
-            const desc     = language === "es" ? work.descriptionEs     : work.description;
-            const isOpen   = expanded === work.id;
+            const title   = language === "es" ? work.titleEs   : work.title;
+            const instrum = language === "es" ? work.instrumentationEs : work.instrumentation;
+            const desc    = language === "es" ? work.descriptionEs     : work.description;
+            const isOpen  = expanded === work.id;
 
             return (
-              <div key={work.id} className="group">
-                {/* Row — clickable to expand */}
+              <div key={work.id} className="border-b border-[rgba(250,248,245,0.05)]">
                 <button
                   onClick={() => setExpanded(isOpen ? null : work.id)}
-                  className="w-full flex items-center justify-between gap-4 py-6 text-left -mx-2 px-2 rounded-lg hover:bg-fg/[0.02] transition-colors duration-200"
+                  className="w-full flex items-center justify-between gap-4 py-6 px-2 text-left rounded-lg transition-colors duration-200 hover:bg-fg/[0.02]"
                 >
                   <div className="flex items-baseline gap-5 min-w-0">
-                    {/* Year */}
-                    <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/25 font-sans shrink-0">
+                    <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/25 shrink-0 min-w-[40px]">
                       {work.year}
                     </span>
-
-                    {/* Title */}
-                    <span className="text-fg font-light text-base md:text-lg leading-snug">
+                    <span className="font-serif italic font-normal text-[clamp(1rem,2vw,1.35rem)] text-fg">
                       {title}
                     </span>
                   </div>
 
-                  {/* Instrumentation */}
-                  <span className="hidden md:block text-[0.7rem] uppercase tracking-[0.08em] text-fg/30 shrink-0">
-                    {instrum}
-                  </span>
-
-                  {/* Expand icon */}
-                  <span className="text-accent/50 group-hover:text-accent transition-colors duration-200 shrink-0">
-                    {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </span>
+                  <div className="flex items-center gap-6 shrink-0">
+                    <span className="hidden md:block text-[0.7rem] uppercase tracking-[0.08em] text-fg/30">
+                      {instrum}
+                    </span>
+                    <span className={isOpen ? "text-accent" : "text-accent/40"} style={{ transition: "color 0.2s" }}>
+                      {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </span>
+                  </div>
                 </button>
 
-                {/* Expandable detail */}
-                <div className={`overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${isOpen ? "max-h-64 pb-6" : "max-h-0"}`}>
-                  <div className="pl-[3.5rem] ml-[3.5rem] border-l border-accent/20">
-                    {/* Mobile instrumentation */}
-                    <p className="md:hidden text-[0.7rem] uppercase tracking-[0.08em] text-fg/30 mb-3">
-                      {t("works_instrumentation")}: {instrum}
-                    </p>
-
-                    <p className="text-sm font-light text-fg/50 leading-relaxed mb-4">
+                <div
+                  className="overflow-hidden transition-all duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+                  style={{ maxHeight: isOpen ? 200 : 0 }}
+                >
+                  <div className="pl-[60px] pr-10 pb-6 ml-[60px] border-l border-accent/20">
+                    <p className="text-[0.9rem] font-light text-fg/50 leading-[1.7] mb-4">
                       {desc}
                     </p>
-
-                    {/* Action links */}
                     <div className="flex gap-5">
-                      {work.listenUrl ? (
-                        // TODO: Update href when listenUrl is set
-                        <a
-                          href={work.listenUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[0.65rem] uppercase tracking-[0.15em] text-accent hover:text-accent-deep transition-colors duration-200"
-                        >
-                          {t("works_listen")}
-                        </a>
-                      ) : (
-                        /* TODO: Remove this disabled placeholder once listenUrl is set */
-                        <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/20 cursor-not-allowed">
-                          {t("works_listen")}
-                        </span>
-                      )}
-
-                      {work.scoreUrl ? (
-                        // TODO: Update href when scoreUrl is set
-                        <a
-                          href={work.scoreUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[0.65rem] uppercase tracking-[0.15em] text-accent hover:text-accent-deep transition-colors duration-200"
-                        >
-                          {t("works_score")}
-                        </a>
-                      ) : (
-                        /* TODO: Remove this disabled placeholder once scoreUrl is set */
-                        <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/20 cursor-not-allowed">
-                          {t("works_score")}
-                        </span>
-                      )}
+                      <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/20">
+                        {language === "es" ? "Escuchar →" : "Listen →"}
+                      </span>
+                      <span className="text-[0.65rem] uppercase tracking-[0.15em] text-fg/20">
+                        {language === "es" ? "Partitura →" : "Score →"}
+                      </span>
                     </div>
                   </div>
                 </div>

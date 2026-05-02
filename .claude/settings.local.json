@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ERV\\\\Documents\\\\GitHub\\\\estebanrv.art-website_V3\\\\public\\\\images\\\\spectrograms\\\\\" | ForEach-Object { $_.Name })",
+      "mcp__pencil__get_editor_state"
+    ]
+  }
+}
