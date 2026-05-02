@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 
-// Social link icons as inline SVGs to avoid extra dependencies
 function YoutubeIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -28,62 +28,88 @@ function InstagramIcon() {
 }
 
 export default function Footer() {
-  const { t, language } = useLanguage();
+  const { t, language, toggleLanguage } = useLanguage();
+  const [langHovered, setLangHovered] = useState(false);
 
   return (
-    <footer className="bg-surface border-t border-[rgba(250,248,245,0.05)] py-12 px-8 md:px-16">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer
+      className="bg-surface border-t border-[rgba(250,248,245,0.05)]"
+      style={{ padding: "48px clamp(32px, 5vw, 64px)" }}
+    >
+      <div className="flex flex-row items-center justify-between gap-6 flex-wrap">
 
-          {/* Site tagline */}
-          <p className="text-sm font-light text-fg/35 tracking-wide">
-            {language === "es"
-              ? "Arte sonoro, música de concierto y multimedia"
-              : "Sound Art, Concert and Multimedia Music"}
-          </p>
+        {/* Language pill — left, aligns with navbar logo */}
+        <button
+          onClick={toggleLanguage}
+          onMouseEnter={() => setLangHovered(true)}
+          onMouseLeave={() => setLangHovered(false)}
+          aria-label="Toggle language"
+          className="relative overflow-hidden shrink-0"
+          style={{
+            fontFamily: "'Helvetica Neue', Helvetica, sans-serif",
+            fontSize: "0.65rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            color: langHovered ? "#0A0A0B" : "rgba(250,248,245,0.4)",
+            background: "none",
+            padding: "6px 16px",
+            borderRadius: "9999px",
+            border: "1px solid rgba(250,248,245,0.1)",
+            cursor: "pointer",
+            transition: "color 0.3s ease",
+          }}
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "9999px",
+              background: "var(--color-accent)",
+              opacity: langHovered ? 1 : 0,
+              transition: "opacity 0.3s ease",
+            }}
+          />
+          <span style={{ position: "relative", zIndex: 1 }}>
+            {language === "es" ? "EN" : "ES"}
+          </span>
+        </button>
 
-          {/* Social links */}
-          <div className="flex items-center gap-5">
-            {/*
-              TODO: Replace "#" with actual social media profile URLs:
-                - YouTube:   "https://www.youtube.com/@..."
-                - Spotify:   "https://open.spotify.com/artist/..."
-                - Instagram: "https://www.instagram.com/..."
-            */}
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-              className="text-fg/35 hover:text-[#FF0000] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <YoutubeIcon />
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Spotify"
-              className="text-fg/35 hover:text-[#1DB954] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <SpotifyIcon />
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="text-fg/35 hover:text-[#E1306C] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <InstagramIcon />
-            </a>
-          </div>
-
-          {/* Copyright */}
-          <p className="text-[0.65rem] uppercase tracking-[0.2em] text-fg/20">
-            {t("footer_copy")}
-          </p>
+        {/* Social links */}
+        <div className="flex items-center gap-5">
+          <a
+            href="https://www.youtube.com/@EstebanRV"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+            className="text-fg/35 hover:text-[#FF0000] hover:-translate-y-0.5 transition-all duration-200"
+          >
+            <YoutubeIcon />
+          </a>
+          <a
+            href="https://open.spotify.com/artist/6e6UQo4i3OpbIS8wtkdia5"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Spotify"
+            className="text-fg/35 hover:text-[#1DB954] hover:-translate-y-0.5 transition-all duration-200"
+          >
+            <SpotifyIcon />
+          </a>
+          <a
+            href="https://www.instagram.com/estebanrvb/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-fg/35 hover:text-[#E1306C] hover:-translate-y-0.5 transition-all duration-200"
+          >
+            <InstagramIcon />
+          </a>
         </div>
+
+        {/* Copyright — right */}
+        <p className="text-[0.65rem] uppercase tracking-[0.2em] text-fg/20">
+          {t("footer_copy")}
+        </p>
       </div>
     </footer>
   );

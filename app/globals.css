@@ -56,7 +56,18 @@
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
+
+  .slide-strip {
+    display: flex;
+    width: 200vw;
+    will-change: transform;
+    transition: transform 0.85s cubic-bezier(0.65, 0, 0.15, 1);
+  }
+  .slide-strip.at-home    { transform: translateX(0); }
+  .slide-strip.at-content { transform: translateX(-100vw); }
+  .slide-panel { width: 100vw; flex-shrink: 0; }
 
 
   ::-webkit-scrollbar { width: 4px; }

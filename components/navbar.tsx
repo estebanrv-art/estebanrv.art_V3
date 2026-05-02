@@ -16,8 +16,13 @@ const NAV_SECTIONS = [
   { key: "nav_contact",      href: "/contact" },
 ] as const;
 
-export default function Navbar() {
-  const { t, language, toggleLanguage } = useLanguage();
+interface NavbarProps {
+  onNavigate?: (key: string) => void;
+  currentPage?: string;
+}
+
+export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
+  const { t, language } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,9 +42,19 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  const logoContent = (
+    <>
+      <span className="font-serif italic text-[1.05rem] leading-none text-fg tracking-[-0.01em] group-hover:text-accent transition-colors duration-200 whitespace-nowrap">
+        Esteban Ruiz-Velasco
+      </span>
+      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-fg/30 mt-0.5 whitespace-nowrap">
+        {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
+      </span>
+    </>
+  );
+
   return (
     <>
-      {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
@@ -47,60 +62,66 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <div className="mx-auto max-w-7xl flex items-center justify-between px-8 py-5">
+        <div
+          className="flex items-center justify-between py-5"
+          style={{ padding: "20px clamp(32px, 5vw, 64px)" }}
+        >
+          {/* Logo */}
+          {onNavigate ? (
+            <button
+              onClick={() => onNavigate("home")}
+              className="flex flex-col group shrink-0 text-left"
+            >
+              {logoContent}
+            </button>
+          ) : (
+            <Link href="/" className="flex flex-col group shrink-0">
+              {logoContent}
+            </Link>
+          )}
 
-          {/* Logo — links back to landing page */}
-          <Link href="/" className="flex flex-col group shrink-0">
-            <span className="font-serif italic text-[1.05rem] leading-none text-fg tracking-[-0.01em] group-hover:text-accent transition-colors duration-200 whitespace-nowrap">
-              Esteban Ruiz-Velasco
-            </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.18em] text-fg/30 mt-0.5 whitespace-nowrap">
-              {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
-            </span>
-          </Link>
-
-          {/* Desktop nav links ─────────────────────── */}
+          {/* Desktop nav links */}
           <nav className="hidden 2xl:flex items-center gap-5">
-            {NAV_SECTIONS.map(({ key, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-[0.65rem] uppercase tracking-[0.06em] text-fg/50 hover:text-fg hover:-translate-y-px transition-all duration-200 whitespace-nowrap"
-              >
-                {t(key as Parameters<typeof t>[0])}
-              </Link>
-            ))}
+            {NAV_SECTIONS.map(({ key, href }) => {
+              const sectionKey = href.slice(1);
+              const isActive = currentPage === sectionKey;
+              const baseClass =
+                "text-[0.65rem] uppercase tracking-[0.06em] transition-all duration-200 whitespace-nowrap border-b";
+              const activeClass = "text-fg border-accent";
+              const inactiveClass =
+                "text-fg/50 hover:text-fg hover:-translate-y-px border-transparent";
+
+              return onNavigate ? (
+                <button
+                  key={href}
+                  onClick={() => onNavigate(sectionKey)}
+                  className={`${baseClass} ${isActive ? activeClass : inactiveClass} bg-transparent`}
+                >
+                  {t(key as Parameters<typeof t>[0])}
+                </button>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`${baseClass} ${inactiveClass}`}
+                >
+                  {t(key as Parameters<typeof t>[0])}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Language toggle + mobile burger ──────────── */}
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={toggleLanguage}
-              aria-label="Toggle language"
-              className="relative overflow-hidden group text-[0.65rem] uppercase tracking-[0.15em] px-3 py-1.5 rounded-full border border-fg/10 transition-colors duration-300"
-              style={{ color: undefined }}
-            >
-              <span
-                className="absolute inset-0 rounded-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                aria-hidden="true"
-              />
-              <span className="relative z-10 text-fg/40 group-hover:text-bg transition-colors duration-300">
-                {t("lang_toggle")}
-              </span>
-            </button>
-
-            {/* Hamburger — visible below 2xl */}
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="2xl:hidden text-fg/50 hover:text-fg transition-colors duration-200"
-            >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
+          {/* Mobile burger */}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="2xl:hidden text-fg/50 hover:text-fg transition-colors duration-200 shrink-0"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
 
-        {/* ── Mobile dropdown menu ───────────────────────────────────── */}
+        {/* Mobile dropdown */}
         <div
           className={`2xl:hidden overflow-hidden transition-all duration-300 border-t border-[rgba(250,248,245,0.05)] ${
             menuOpen
@@ -109,16 +130,27 @@ export default function Navbar() {
           }`}
         >
           <nav className="flex flex-col px-8 py-6 gap-5">
-            {NAV_SECTIONS.map(({ key, href }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className="text-[0.8rem] uppercase tracking-[0.1em] text-fg/50 hover:text-fg transition-colors duration-200"
-              >
-                {t(key as Parameters<typeof t>[0])}
-              </Link>
-            ))}
+            {NAV_SECTIONS.map(({ key, href }) => {
+              const sectionKey = href.slice(1);
+              return onNavigate ? (
+                <button
+                  key={href}
+                  onClick={() => { onNavigate(sectionKey); setMenuOpen(false); }}
+                  className="text-[0.8rem] uppercase tracking-[0.1em] text-fg/50 hover:text-fg transition-colors duration-200 text-left bg-transparent border-none"
+                >
+                  {t(key as Parameters<typeof t>[0])}
+                </button>
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-[0.8rem] uppercase tracking-[0.1em] text-fg/50 hover:text-fg transition-colors duration-200"
+                >
+                  {t(key as Parameters<typeof t>[0])}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </header>

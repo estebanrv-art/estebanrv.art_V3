@@ -29,6 +29,7 @@ export default function BioSection() {
               <p className="text-base font-light text-fg/55 leading-[1.7]">{t("bio_p1")}</p>
               <p className="text-base font-light text-fg/55 leading-[1.7]">{t("bio_p2")}</p>
               <p className="text-base font-light text-fg/55 leading-[1.7]">{t("bio_p3")}</p>
+              <p className="text-base font-light text-fg/55 leading-[1.7]">{t("bio_p4")}</p>
             </div>
 
             {/* Decorative divider */}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useLanguage, type Language } from "@/lib/language-context";
 
 function LangButton({ label, onClick }: { label: string; onClick: () => void }) {
@@ -42,9 +41,8 @@ function LangButton({ label, onClick }: { label: string; onClick: () => void }) 
   );
 }
 
-export default function HeroSection() {
+export default function HeroSection({ onChoose }: { onChoose: () => void }) {
   const { language, setLanguage } = useLanguage();
-  const router = useRouter();
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
@@ -57,7 +55,7 @@ export default function HeroSection() {
 
   function choose(lang: Language) {
     setLanguage(lang);
-    router.push("/bio");
+    onChoose();
   }
 
   return (
