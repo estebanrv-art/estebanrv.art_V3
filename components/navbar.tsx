@@ -81,7 +81,7 @@ export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
           )}
 
           {/* Desktop nav links */}
-          <nav className="hidden 2xl:flex items-center gap-5">
+          <nav className="hidden lg:flex items-center gap-5">
             {NAV_SECTIONS.map(({ key, href }) => {
               const sectionKey = href.slice(1);
               const isActive = currentPage === sectionKey;
@@ -115,7 +115,7 @@ export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
           <button
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="2xl:hidden text-fg/50 hover:text-fg transition-colors duration-200 shrink-0"
+            className="lg:hidden text-fg/50 hover:text-fg transition-colors duration-200 shrink-0"
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -123,7 +123,7 @@ export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
 
         {/* Mobile dropdown */}
         <div
-          className={`2xl:hidden overflow-hidden transition-all duration-300 border-t border-[rgba(250,248,245,0.05)] ${
+          className={`lg:hidden overflow-hidden transition-all duration-300 border-t border-[rgba(250,248,245,0.05)] ${
             menuOpen
               ? "max-h-96 bg-[rgba(17,18,20,0.95)] backdrop-blur-[20px]"
               : "max-h-0"

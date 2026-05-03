@@ -44,6 +44,14 @@ function LangButton({ label, onClick }: { label: string; onClick: () => void }) 
 export default function HeroSection({ onChoose }: { onChoose: () => void }) {
   const { language, setLanguage } = useLanguage();
   const [phase, setPhase] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 50);
@@ -66,7 +74,7 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
         overflow: "hidden",
         display: "flex",
         alignItems: "flex-end",
-        paddingBottom: 80,
+        paddingBottom: isMobile ? 32 : 80,
         paddingLeft: "clamp(32px, 5vw, 64px)",
         paddingRight: "clamp(32px, 5vw, 64px)",
         background: "#0A0A0B",
@@ -105,7 +113,6 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               textTransform: "uppercase",
               letterSpacing: "0.28em",
               color: "rgba(250,248,245,0.45)",
-              whiteSpace: "nowrap",
             }}
           >
             {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
@@ -167,7 +174,6 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               textTransform: "uppercase",
               letterSpacing: "0.28em",
               color: "rgba(250,248,245,0.45)",
-              whiteSpace: "nowrap",
               margin: 0,
             }}
           >

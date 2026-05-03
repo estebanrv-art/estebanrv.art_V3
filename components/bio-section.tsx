@@ -1,9 +1,18 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 export default function BioSection() {
   const { language, t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section id="bio" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
@@ -14,10 +23,10 @@ export default function BioSection() {
           {language === "es" ? "01 — Biografía" : "01 — Biography"}
         </p>
 
-        {/* 4fr / 5fr grid */}
+        {/* 4fr / 5fr grid — stacks to single column on mobile */}
         <div
-          className="grid items-start gap-[clamp(48px,6vw,96px)]"
-          style={{ gridTemplateColumns: "4fr 5fr" }}
+          className="grid items-start gap-[clamp(32px,6vw,96px)]"
+          style={{ gridTemplateColumns: isMobile ? "1fr" : "4fr 5fr" }}
         >
           {/* Text column */}
           <div>
@@ -43,7 +52,7 @@ export default function BioSection() {
           <div className="relative">
             <div
               className="relative w-full rounded-[2rem] overflow-hidden border border-[rgba(250,248,245,0.05)] bg-surface"
-              style={{ aspectRatio: "2/3", minHeight: 480 }}
+              style={{ aspectRatio: "2/3", minHeight: isMobile ? 280 : 480 }}
             >
               {/* Placeholder */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-fg/[0.12]">

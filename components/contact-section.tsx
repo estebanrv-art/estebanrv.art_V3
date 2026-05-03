@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 function InputField({
@@ -119,6 +119,14 @@ function SubmitButton({ label }: { label: string }) {
 export default function ContactSection() {
   const { language, t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -133,10 +141,10 @@ export default function ContactSection() {
           {language === "es" ? "07 — Contacto" : "07 — Contact"}
         </p>
 
-        {/* 4fr / 5fr grid */}
+        {/* 4fr / 5fr grid — stacks to single column on mobile */}
         <div
-          className="grid items-start gap-[clamp(48px,6vw,96px)]"
-          style={{ gridTemplateColumns: "4fr 5fr" }}
+          className="grid items-start gap-[clamp(32px,6vw,96px)]"
+          style={{ gridTemplateColumns: isMobile ? "1fr" : "4fr 5fr" }}
         >
           {/* Left — form */}
           <div>
@@ -172,7 +180,7 @@ export default function ContactSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
                   <InputField label={t("contact_fname")} id="fname" placeholder={t("contact_fname")} />
                   <InputField label={t("contact_lname")} id="lname" placeholder={t("contact_lname")} />
                 </div>
@@ -196,7 +204,7 @@ export default function ContactSection() {
           <div className="relative">
             <div
               className="relative w-full rounded-[2rem] overflow-hidden border border-[rgba(250,248,245,0.05)] bg-surface"
-              style={{ aspectRatio: "2/3", minHeight: 480 }}
+              style={{ aspectRatio: "2/3", minHeight: isMobile ? 280 : 480 }}
             >
               {/* Placeholder */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-fg/[0.12]">

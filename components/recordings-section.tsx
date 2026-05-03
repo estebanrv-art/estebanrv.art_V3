@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 interface Recording {
@@ -104,6 +104,14 @@ function WaveformBars({ color }: { color: string }) {
 export default function RecordingsSection() {
   const { language } = useLanguage();
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section id="recordings" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
@@ -129,8 +137,8 @@ export default function RecordingsSection() {
                 {/* Row — click to toggle embed */}
                 <button
                   onClick={() => setExpanded(isOpen ? null : rec.id)}
-                  className="w-full group grid items-center gap-6 px-6 py-5 hover:bg-[rgba(67,179,174,0.04)] transition-colors duration-200"
-                  style={{ gridTemplateColumns: "40px 1fr auto auto" }}
+                  className="w-full group grid items-center gap-4 sm:gap-6 px-6 py-5 hover:bg-[rgba(67,179,174,0.04)] transition-colors duration-200"
+                  style={{ gridTemplateColumns: isMobile ? "32px 1fr auto" : "40px 1fr auto auto" }}
                 >
                   <span className="text-[0.65rem] text-fg/20 tracking-[0.1em]">
                     {String(idx + 1).padStart(2, "0")}
@@ -146,7 +154,7 @@ export default function RecordingsSection() {
                     </span>
                   </div>
 
-                  <WaveformBars color={rec.platformColor} />
+                  {!isMobile && <WaveformBars color={rec.platformColor} />}
 
                   <div className="text-right">
                     <span className="block text-[0.65rem] text-fg/25 tracking-[0.1em]">
