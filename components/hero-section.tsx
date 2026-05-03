@@ -17,9 +17,10 @@ function LangButton({ label, onClick }: { label: string; onClick: () => void }) 
         border: "none",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         fontSize: "0.75rem",
+        fontWeight: 400,
         textTransform: "uppercase",
         letterSpacing: "0.2em",
-        color: hovered ? "#FAF8F5" : "rgba(250,248,245,0.5)",
+        color: hovered ? "#FAF8F5" : "rgba(250, 248, 245, 0.82)",
         cursor: "pointer",
         transition: "color 0.25s ease",
       }}
@@ -75,7 +76,7 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
         display: "flex",
         alignItems: isMobile ? "center" : "flex-end",
         paddingBottom: isMobile ? 0 : 100,
-        paddingTop: isMobile ? 400 : 0,
+        paddingTop: isMobile ? 300 : 0,
         paddingLeft: "clamp(32px, 5vw, 64px)",
         paddingRight: "clamp(32px, 5vw, 64px)",
         background: "#0A0A0B",
@@ -113,7 +114,8 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               fontWeight: 500,
               textTransform: "uppercase",
               letterSpacing: "0.28em",
-              color: "rgba(250,248,245,0.45)",
+              color: "rgba(250, 248, 245, 0.76)",
+              margin: 0,
             }}
           >
             {language === "es" ? "Compositor · Pianista" : "Composer · Pianist"}
@@ -135,7 +137,7 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               fontWeight: 400,
               fontSize: "clamp(3.2rem, 8.5vw, 8rem)",
               lineHeight: 0.88,
-              letterSpacing: "-0.02em",
+              letterSpacing: "0.02em",
               color: "#FAF8F5",
               margin: 0,
             }}
@@ -149,7 +151,7 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               fontWeight: 400,
               fontSize: "clamp(3.2rem, 8.5vw, 8rem)",
               lineHeight: 0.88,
-              letterSpacing: "-0.02em",
+              letterSpacing: "0.02em",
               color: "#FAF8F5",
               margin: 0,
             }}
@@ -174,7 +176,7 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
               fontWeight: 500,
               textTransform: "uppercase",
               letterSpacing: "0.28em",
-              color: "rgba(250,248,245,0.45)",
+              color: "rgba(250, 248, 245, 0.76)",
               margin: 0,
             }}
           >
