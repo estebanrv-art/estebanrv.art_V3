@@ -73,8 +73,9 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
         minHeight: "100vh",
         overflow: "hidden",
         display: "flex",
-        alignItems: "flex-end",
-        paddingBottom: isMobile ? 32 : 80,
+        alignItems: isMobile ? "center" : "flex-end",
+        paddingBottom: isMobile ? 0 : 100,
+        paddingTop: isMobile ? 400 : 0,
         paddingLeft: "clamp(32px, 5vw, 64px)",
         paddingRight: "clamp(32px, 5vw, 64px)",
         background: "#0A0A0B",
@@ -178,8 +179,8 @@ export default function HeroSection({ onChoose }: { onChoose: () => void }) {
             }}
           >
             {language === "es"
-              ? "Arte sonoro · Música de concierto · Multimedia"
-              : "Sound art · Concert music · Multimedia"}
+              ? "Arte sonoro · Multimedia · Música de concierto"
+              : "Sound art · Multimedia · Concert music"}
           </p>
         </div>
 

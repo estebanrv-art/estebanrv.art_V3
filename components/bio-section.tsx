@@ -1,33 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 export default function BioSection() {
   const { language, t } = useLanguage();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   return (
     <section id="bio" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
       <div className="max-w-[1280px] mx-auto">
 
-        {/* Section label */}
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-          {language === "es" ? "01 — Biografía" : "01 — Biography"}
-        </p>
-
-        {/* 4fr / 5fr grid — stacks to single column on mobile */}
-        <div
-          className="grid items-start gap-[clamp(32px,6vw,96px)]"
-          style={{ gridTemplateColumns: isMobile ? "1fr" : "4fr 5fr" }}
-        >
+        {/* Single column on mobile, 4fr/5fr on md+ */}
+        <div className="grid items-start gap-[clamp(32px,6vw,96px)] grid-cols-1 md:[grid-template-columns:4fr_5fr]">
           {/* Text column */}
           <div>
             <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent mb-12">
@@ -52,7 +35,7 @@ export default function BioSection() {
           <div className="relative">
             <div
               className="relative w-full rounded-[2rem] overflow-hidden border border-[rgba(250,248,245,0.05)] bg-surface"
-              style={{ aspectRatio: "2/3", minHeight: isMobile ? 280 : 480 }}
+              style={{ aspectRatio: "2/3" }}
             >
               {/* Placeholder */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-fg/[0.12]">

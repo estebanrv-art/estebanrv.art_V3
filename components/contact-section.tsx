@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 function InputField({
@@ -119,14 +119,6 @@ function SubmitButton({ label }: { label: string }) {
 export default function ContactSection() {
   const { language, t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -137,15 +129,8 @@ export default function ContactSection() {
     <section id="contact" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
       <div className="max-w-[1280px] mx-auto">
 
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-          {language === "es" ? "07 — Contacto" : "07 — Contact"}
-        </p>
-
-        {/* 4fr / 5fr grid — stacks to single column on mobile */}
-        <div
-          className="grid items-start gap-[clamp(32px,6vw,96px)]"
-          style={{ gridTemplateColumns: isMobile ? "1fr" : "4fr 5fr" }}
-        >
+        {/* Single column on mobile, 4fr/5fr on md+ */}
+        <div className="grid items-start gap-[clamp(32px,6vw,96px)] grid-cols-1 md:[grid-template-columns:4fr_5fr]">
           {/* Left — form */}
           <div>
             <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent mb-5">
@@ -180,7 +165,7 @@ export default function ContactSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField label={t("contact_fname")} id="fname" placeholder={t("contact_fname")} />
                   <InputField label={t("contact_lname")} id="lname" placeholder={t("contact_lname")} />
                 </div>
@@ -204,7 +189,7 @@ export default function ContactSection() {
           <div className="relative">
             <div
               className="relative w-full rounded-[2rem] overflow-hidden border border-[rgba(250,248,245,0.05)] bg-surface"
-              style={{ aspectRatio: "2/3", minHeight: isMobile ? 280 : 480 }}
+              style={{ aspectRatio: "2/3" }}
             >
               {/* Placeholder */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-fg/[0.12]">

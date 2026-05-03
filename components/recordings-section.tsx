@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 
 interface Recording {
@@ -104,22 +104,10 @@ function WaveformBars({ color }: { color: string }) {
 export default function RecordingsSection() {
   const { language } = useLanguage();
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 640);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   return (
     <section id="recordings" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
       <div className="max-w-[1280px] mx-auto">
-
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-          {language === "es" ? "04 — Grabaciones" : "04 — Recordings"}
-        </p>
 
         <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent mb-12">
           {language === "es" ? "Grabaciones" : "Recordings"}
@@ -137,8 +125,7 @@ export default function RecordingsSection() {
                 {/* Row — click to toggle embed */}
                 <button
                   onClick={() => setExpanded(isOpen ? null : rec.id)}
-                  className="w-full group grid items-center gap-4 sm:gap-6 px-6 py-5 hover:bg-[rgba(67,179,174,0.04)] transition-colors duration-200"
-                  style={{ gridTemplateColumns: isMobile ? "32px 1fr auto" : "40px 1fr auto auto" }}
+                  className="w-full group grid items-center gap-4 sm:gap-6 px-6 py-5 hover:bg-[rgba(67,179,174,0.04)] transition-colors duration-200 [grid-template-columns:32px_1fr_auto] sm:[grid-template-columns:40px_1fr_auto_auto]"
                 >
                   <span className="text-[0.65rem] text-fg/20 tracking-[0.1em]">
                     {String(idx + 1).padStart(2, "0")}
@@ -154,7 +141,9 @@ export default function RecordingsSection() {
                     </span>
                   </div>
 
-                  {!isMobile && <WaveformBars color={rec.platformColor} />}
+                  <div className="hidden sm:block">
+                    <WaveformBars color={rec.platformColor} />
+                  </div>
 
                   <div className="text-right">
                     <span className="block text-[0.65rem] text-fg/25 tracking-[0.1em]">

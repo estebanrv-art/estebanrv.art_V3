@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HeroSection from "@/components/hero-section";
 import BioSection from "@/components/bio-section";
 import WorksSection from "@/components/works-section";
@@ -29,6 +29,16 @@ export default function Home() {
   const [contentPage, setContentPage] = useState<string | null>(null);
   const [page, setPage] = useState("home");
   const [pageKey, setPageKey] = useState(0);
+
+  useEffect(() => {
+    const el = document.documentElement;
+    if (atHome) {
+      el.style.overflow = "hidden";
+    } else {
+      el.style.overflow = "";
+    }
+    return () => { el.style.overflow = ""; };
+  }, [atHome]);
 
   function navigate(p: string) {
     if (p === "home") {

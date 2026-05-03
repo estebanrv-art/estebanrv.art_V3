@@ -98,10 +98,6 @@ export default function ProjectsSection() {
   return (
     <section id="projects" className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20">
       <div className="max-w-[1280px] mx-auto">
-        <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-          {language === "es" ? "07 — Proyectos" : "07 — Projects"}
-        </p>
-
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent">
             {t("projects_heading")}

@@ -179,10 +179,6 @@ export default function ScoresSection() {
         className="bg-bg min-h-screen px-[clamp(32px,5vw,64px)] pt-[120px] pb-20"
       >
         <div className="max-w-[1280px] mx-auto">
-          <p className="text-[0.75rem] uppercase tracking-[0.28em] text-fg/30 mb-16">
-            {language === "es" ? "03 — Partituras" : "03 — Scores"}
-          </p>
-
           <h2 className="font-serif italic font-normal text-[clamp(3.5rem,7vw,7rem)] leading-none text-accent mb-12">
             {language === "es" ? "Partituras" : "Scores"}
           </h2>

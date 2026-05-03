@@ -24,15 +24,6 @@ interface NavbarProps {
 export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
   const { t, language } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 60);
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -56,11 +47,7 @@ export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-[rgba(17,18,20,0.88)] backdrop-blur-[16px] border-b border-[rgba(67,179,174,0.18)] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
-            : "bg-transparent"
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 border-b bg-[rgba(17,18,20,0.88)] backdrop-blur-[16px] border-[rgba(67,179,174,0.18)] shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
       >
         <div
           className="flex items-center justify-between py-5"
